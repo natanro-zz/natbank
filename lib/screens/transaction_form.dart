@@ -6,6 +6,8 @@ import 'package:natbank/models/contact.dart';
 import 'package:natbank/models/response_dialog.dart';
 import 'package:natbank/models/transaction.dart';
 import 'package:natbank/models/transaction_auth_dialog.dart';
+import 'package:natbank/widgets/progress.dart';
+import 'package:uuid/uuid.dart';
 
 class TransactionForm extends StatefulWidget {
   final Contact contact;
@@ -19,6 +21,8 @@ class TransactionForm extends StatefulWidget {
 class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionsWebClient _webClient = TransactionsWebClient();
+  final String _transactionId = Uuid().v4();
+  bool _sending = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +36,15 @@ class _TransactionFormState extends State<TransactionForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Visibility(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Progress(
+                    label: 'Enviando...',
+                  ),
+                ),
+                visible: _sending,
+              ),
               Text(
                 widget.contact.name,
                 style: TextStyle(
@@ -66,8 +79,11 @@ class _TransactionFormState extends State<TransactionForm> {
                     onPressed: () {
                       final double value =
                           double.tryParse(_valueController.text);
-                      final transactionCreated =
-                          Transaction(value, widget.contact);
+                      final transactionCreated = Transaction(
+                        _transactionId,
+                        value,
+                        widget.contact,
+                      );
                       showDialog(
                           context: context,
                           builder: (contextDialog) {
@@ -94,22 +110,25 @@ class _TransactionFormState extends State<TransactionForm> {
     Transaction transaction =
         await _send(transactionCreated, password, context);
 
+    _showSuccessDialog(context, transaction);
+  }
+
+  Future _showSuccessDialog(BuildContext context, Transaction transaction) async {
     if (transaction != null) {
-      _showSuccessDialog(context);
+      await showDialog(
+          context: context,
+          builder: (contextDialog) {
+            return SuccessDialog(message: 'transação enviada');
+          });
       Navigator.pop(context);
     }
   }
 
-  void _showSuccessDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (contextDialog) {
-          return SuccessDialog(message: 'transação enviada');
-        });
-  }
-
   Future<Transaction> _send(Transaction transactionCreated, String password,
       BuildContext context) async {
+    setState(() {
+      _sending = true;
+    });
     final Transaction transaction =
         await _webClient.save(transactionCreated, password).catchError((e) {
       _showFailureDialog(context, message: e.message);
@@ -117,7 +136,11 @@ class _TransactionFormState extends State<TransactionForm> {
       _showFailureDialog(context, message: 'tempo de conexão esgotado');
     }, test: (e) => e is TimeoutException).catchError((e) {
       _showFailureDialog(context);
-    }, test: (e) => e is Exception);
+    }, test: (e) => e is Exception).whenComplete(() => {
+              setState(() {
+                _sending = false;
+              })
+            });
     return transaction;
   }
 
