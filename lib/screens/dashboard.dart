@@ -8,41 +8,50 @@ class Dashboard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Dashboard')),
       backgroundColor: Colors.blue[300],
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                'images/natbank_lightBlue500.png',
-                scale: 0.5,
-              ),
+      body: LayoutBuilder(
+        builder: (context, constrainedBox) => SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constrainedBox.minHeight,
             ),
-            Container(
-              height: 120,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _FeatureItem(
-                    'Transferências',
-                    Icons.monetization_on,
-                    onClick: () => _showContactsList(context),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      'images/natbank_lightBlue500.png',
+                      scale: 0.5,
+                    ),
                   ),
-                  _FeatureItem(
-                    'Feed de transações',
-                    Icons.description,
-                    onClick: () => _showTransactionsList(context),
+                  Container(
+                    height: 120,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        FeatureItem(
+                          'Transferir',
+                          Icons.monetization_on,
+                          onClick: () => _showContactsList(context),
+                        ),
+                        FeatureItem(
+                          'Feed de transferências',
+                          Icons.description,
+                          onClick: () => _showTransactionsList(context),
+                        ),
+                        FeatureItem(
+                          'Pagar',
+                          Icons.payment,
+                          onClick: () => print('Pagar foi clicado'),
+                        ),
+                      ],
+                    ),
                   ),
-                  _FeatureItem(
-                    'Pagar',
-                    Icons.payment,
-                    onClick: () => print('Pagar foi clicado'),
-                  ),
-                ],
-              ),
-            ),
-          ]),
+                ]),
+          ),
+        ),
+      ),
     );
   }
 
@@ -57,12 +66,12 @@ class Dashboard extends StatelessWidget {
   }
 }
 
-class _FeatureItem extends StatelessWidget {
+class FeatureItem extends StatelessWidget {
   final String name;
   final IconData icon;
   final Function onClick;
 
-  _FeatureItem(
+  FeatureItem(
     this.name,
     this.icon, {
     @required this.onClick,
