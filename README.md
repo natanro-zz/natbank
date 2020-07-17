@@ -1,4 +1,5 @@
 # natbank
+![Test, Build and Release APK](https://github.com/natrodrigues/natbank/workflows/Test,%20Build%20and%20Release%20APK/badge.svg)
 
 A new Flutter project.
 
