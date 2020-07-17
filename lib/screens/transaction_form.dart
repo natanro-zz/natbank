@@ -6,6 +6,7 @@ import 'package:natbank/models/contact.dart';
 import 'package:natbank/models/response_dialog.dart';
 import 'package:natbank/models/transaction.dart';
 import 'package:natbank/models/transaction_auth_dialog.dart';
+import 'package:natbank/widgets/app_dependencies.dart';
 import 'package:natbank/widgets/progress.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,12 +21,12 @@ class TransactionForm extends StatefulWidget {
 
 class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
-  final TransactionsWebClient _webClient = TransactionsWebClient();
   final String _transactionId = Uuid().v4();
   bool _sending = false;
 
   @override
   Widget build(BuildContext context) {
+    final dependencies = AppDependencies.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Nova transação'),
@@ -89,7 +90,10 @@ class _TransactionFormState extends State<TransactionForm> {
                           builder: (contextDialog) {
                             return TransactionAuthDialog(
                                 onConfirm: (String password) => _save(
-                                    transactionCreated, password, context));
+                                    dependencies.transactionsWebClient,
+                                    transactionCreated,
+                                    password,
+                                    context));
                           });
                     },
                   ),
@@ -103,17 +107,19 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   void _save(
+    TransactionsWebClient webClient,
     Transaction transactionCreated,
     String password,
     BuildContext context,
   ) async {
     Transaction transaction =
-        await _send(transactionCreated, password, context);
+        await _send(webClient, transactionCreated, password, context);
 
     _showSuccessDialog(context, transaction);
   }
 
-  Future _showSuccessDialog(BuildContext context, Transaction transaction) async {
+  Future _showSuccessDialog(
+      BuildContext context, Transaction transaction) async {
     if (transaction != null) {
       await showDialog(
           context: context,
@@ -124,13 +130,16 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
-  Future<Transaction> _send(Transaction transactionCreated, String password,
+  Future<Transaction> _send(
+      TransactionsWebClient webClient,
+      Transaction transactionCreated,
+      String password,
       BuildContext context) async {
     setState(() {
       _sending = true;
     });
     final Transaction transaction =
-        await _webClient.save(transactionCreated, password).catchError((e) {
+        await webClient.save(transactionCreated, password).catchError((e) {
       _showFailureDialog(context, message: e.message);
     }, test: (e) => e is HttpException).catchError((e) {
       _showFailureDialog(context, message: 'tempo de conexão esgotado');
