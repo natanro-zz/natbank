@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:natbank/dao/contact_dao.dart';
 import 'package:natbank/models/contact.dart';
+import 'package:natbank/widgets/app_dependencies.dart';
 
 class ContactForm extends StatefulWidget {
   @override
@@ -11,10 +12,10 @@ class _ContactFormState extends State<ContactForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _accountNumberController =
       TextEditingController();
-  final ContactDAO _contactDAO = ContactDAO();
 
   @override
   Widget build(BuildContext context) {
+    final dependencies = AppDependencies.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Novo contato'),
@@ -56,7 +57,7 @@ class _ContactFormState extends State<ContactForm> {
                     final int accountNumber =
                         int.tryParse(_accountNumberController.text);
                     final Contact newContact = Contact(0, name, accountNumber);
-                    _contactDAO.save(newContact).then((id) => Navigator.pop(context));
+                    _save(dependencies.contactDAO, newContact, context);
                   },
                 ),
               ),
@@ -65,5 +66,11 @@ class _ContactFormState extends State<ContactForm> {
         ),
       ),
     );
+  }
+
+  void _save(
+      ContactDAO contactDAO, Contact newContact, BuildContext context) async {
+    await contactDAO.save(newContact);
+    Navigator.pop(context);
   }
 }

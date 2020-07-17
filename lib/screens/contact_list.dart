@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:natbank/dao/contact_dao.dart';
 import 'package:natbank/models/contact.dart';
 import 'package:natbank/screens/contact_form.dart';
 import 'package:natbank/screens/transaction_form.dart';
+import 'package:natbank/widgets/app_dependencies.dart';
 import 'package:natbank/widgets/progress.dart';
 
 class ContactList extends StatefulWidget {
@@ -11,16 +11,16 @@ class ContactList extends StatefulWidget {
 }
 
 class _ContactListState extends State<ContactList> {
-  final ContactDAO _contactDAO = ContactDAO();
   @override
   Widget build(BuildContext context) {
+    final dependencies = AppDependencies.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Tranferências'),
       ),
       body: FutureBuilder<List<Contact>>(
           initialData: List(),
-          future: _contactDAO.findAll(),
+          future: dependencies.contactDAO.findAll(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -37,7 +37,7 @@ class _ContactListState extends State<ContactList> {
                   return ListView.builder(
                     itemBuilder: (context, index) {
                       Contact contact = contacts[index];
-                      return _ContactItem(
+                      return ContactItem(
                         contact,
                         onClick: () {
                           Navigator.of(context).push(
@@ -82,11 +82,11 @@ class _ContactListState extends State<ContactList> {
   _reload() => setState(() {});
 }
 
-class _ContactItem extends StatelessWidget {
+class ContactItem extends StatelessWidget {
   final Contact contact;
   final Function onClick;
 
-  const _ContactItem(
+  const ContactItem(
     this.contact, {
     @required this.onClick,
   });
