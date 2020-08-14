@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:natbank/http/webclients/natbank_server.dart';
 import 'package:natbank/http/webclients/transactions_webclient.dart';
 import 'package:natbank/models/contact.dart';
 import 'package:natbank/models/response_dialog.dart';
@@ -140,9 +141,9 @@ class _TransactionFormState extends State<TransactionForm> {
     });
     final Transaction transaction =
         await webClient.save(transactionCreated, password).catchError((e) {
-      _showFailureDialog(context, message: e.message);
-    }, test: (e) => e is HttpException).catchError((e) {
-      _showFailureDialog(context, message: 'tempo de conexão esgotado');
+      _showFailureDialog(context, message: e.toString());
+    }, test: (e) => e is NatbankException).catchError((e) {
+      _showFailureDialog(context, message: 'Tempo de conexão esgotado');
     }, test: (e) => e is TimeoutException).catchError((e) {
       _showFailureDialog(context);
     }, test: (e) => e is Exception).whenComplete(() => {

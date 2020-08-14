@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:natbank/dao/contact_dao.dart';
 import 'package:natbank/screens/contact_list.dart';
 import 'package:natbank/screens/transactions_list.dart';
 

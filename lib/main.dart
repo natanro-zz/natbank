@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:natbank/dao/account_dao.dart';
 import 'package:natbank/dao/contact_dao.dart';
+import 'package:natbank/dao/user_dao.dart';
+import 'package:natbank/http/webclients/account_webclient.dart';
 import 'package:natbank/http/webclients/transactions_webclient.dart';
-import 'package:natbank/screens/dashboard.dart';
+import 'package:natbank/screens/login.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
 
 void main() {
   runApp(NatBankApp(
     contactDAO: ContactDAO(),
     transactionsWebClient: TransactionsWebClient(),
+    userDAO: UserDAO(),
+    accountWebClient: AccountWebClient(),
+    accountDAO: AccountDAO(),
   ));
 }
 
 class NatBankApp extends StatelessWidget {
   final ContactDAO contactDAO;
   final TransactionsWebClient transactionsWebClient;
+  final UserDAO userDAO;
+  final AccountWebClient accountWebClient;
+  final AccountDAO accountDAO;
 
   NatBankApp({
     @required this.contactDAO,
     @required this.transactionsWebClient,
+    @required this.userDAO,
+    @required this.accountWebClient,
+    @required this.accountDAO,
   });
 
   // This widget is the root of your application.
@@ -26,7 +38,11 @@ class NatBankApp extends StatelessWidget {
     return AppDependencies(
       contactDAO: contactDAO,
       transactionsWebClient: transactionsWebClient,
+      userDAO: userDAO,
+      accountWebClient: accountWebClient,
+      accountDAO: accountDAO,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.blue[800],
           accentColor: Colors.blue[900],
@@ -35,7 +51,7 @@ class NatBankApp extends StatelessWidget {
             textTheme: ButtonTextTheme.primary,
           ),
         ),
-        home: Dashboard(),
+        home: Login(),
       ),
     );
   }
