@@ -1,13 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-Future<Database> getDatabase(
-    {@required String tableName}) async {
-  final   List<String> onCreateSQL = [
+Future<Database> getDatabase({@required String tableName}) async {
+  final List<String> onCreateSQL = [
     'CREATE TABLE user (id INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT, cpf TEXT, password TEXT, email TEXT)',
     'CREATE TABLE contacts (id INTEGER PRIMARY KEY, name TEXT, account_number INTEGER)',
     'CREATE TABLE account (id INTEGER PRIMARY KEY, number INTEGER, agency TEXT, balance REAL)',
+    'CREATE TABLE auth (id INTEGER PRIMARY KEY, duration INTEGER, loggedAt TEXT)'
   ];
   final String path = join(await getDatabasesPath(), 'natbank.db');
   final int version = 1;

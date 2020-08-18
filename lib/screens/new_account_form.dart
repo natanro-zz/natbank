@@ -3,20 +3,29 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:natbank/http/webclients/natbank_server.dart';
 import 'package:natbank/models/account.dart';
-import 'package:natbank/models/response_dialog.dart';
-import 'package:natbank/models/user_form.dart';
+import 'package:natbank/widgets/response_dialog.dart';
+import 'package:natbank/forms/user_form.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
+import 'package:natbank/widgets/progress.dart';
 
 import 'login.dart';
 
-// TODO: possivelmente mudar para Statefull para mostrar widget de loading
+class NewAccount extends StatefulWidget {
+  @override
+  _NewAccountState createState() => _NewAccountState();
+}
 
-class NewAccount extends StatelessWidget {
+class _NewAccountState extends State<NewAccount> {
   final TextEditingController _firstNameController = TextEditingController();
+
   final TextEditingController _lastNameController = TextEditingController();
+
   final TextEditingController _cpfController = TextEditingController();
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
+  bool _sendingForm = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +38,15 @@ class NewAccount extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Visibility(
+                  visible: _sendingForm,
+                  child: Progress(
+                    label: 'Criando conta',
+                  ),
+                ),
+              ),
               ClipPath(
                 clipper: LoginClipper(),
                 child: Container(
@@ -108,14 +126,13 @@ class NewAccount extends StatelessWidget {
                 controller: _passwordController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
-              NewAccountButton(
-                buttonText: "Cadastrar",
-                firstNameController: _firstNameController,
-                lastNameController: _lastNameController,
-                cpfController: _cpfController,
-                emailController: _emailController,
-                passwordController: _passwordController,
-              ),
+              newAccountButton(context,
+                  buttonText: 'Cadastrar',
+                  firstNameController: _firstNameController,
+                  lastNameController: _lastNameController,
+                  cpfController: _cpfController,
+                  emailController: _emailController,
+                  passwordController: _passwordController),
               SizedBox(
                 height: 20,
               ),
@@ -125,27 +142,16 @@ class NewAccount extends StatelessWidget {
       ),
     );
   }
-}
 
-class NewAccountButton extends StatelessWidget {
-  final String buttonText;
-  final TextEditingController firstNameController;
-  final TextEditingController lastNameController;
-  final TextEditingController cpfController;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-
-  NewAccountButton({
-    @required this.buttonText,
-    @required this.firstNameController,
-    @required this.lastNameController,
-    @required this.cpfController,
-    @required this.emailController,
-    @required this.passwordController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget newAccountButton(
+    BuildContext context, {
+    @required String buttonText,
+    @required TextEditingController firstNameController,
+    @required TextEditingController lastNameController,
+    @required TextEditingController cpfController,
+    @required TextEditingController emailController,
+    @required TextEditingController passwordController,
+  }) {
     final dependencies = AppDependencies.of(context);
     return Container(
       margin: EdgeInsets.only(top: 20),
@@ -163,7 +169,7 @@ class NewAccountButton extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: Text(
-                      this.buttonText,
+                      buttonText,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -183,14 +189,23 @@ class NewAccountButton extends StatelessWidget {
                           Icons.check,
                           color: Colors.lightBlueAccent,
                         ),
-                        onPressed: () =>
-                            _registerNewUser(dependencies, context),
+                        onPressed: () => _registerNewUser(dependencies, context,
+                            firstName: firstNameController.text,
+                            lastName: lastNameController.text,
+                            cpf: cpfController.text,
+                            email: emailController.text,
+                            password: passwordController.text),
                       ),
                     ),
                   ),
                 ],
               ),
-              onPressed: () => _registerNewUser(dependencies, context),
+              onPressed: () => _registerNewUser(dependencies, context,
+                  firstName: firstNameController.text,
+                  lastName: lastNameController.text,
+                  cpf: cpfController.text,
+                  email: emailController.text,
+                  password: passwordController.text),
             ),
           )
         ],
@@ -198,17 +213,22 @@ class NewAccountButton extends StatelessWidget {
     );
   }
 
-  Future _registerNewUser(
-      AppDependencies dependencies, BuildContext context) async {
+  Future _registerNewUser(AppDependencies dependencies, BuildContext context,
+      {@required String firstName,
+      @required String lastName,
+      @required String cpf,
+      @required String email,
+      @required String password}) async {
     {
       UserForm userForm = UserForm(
-        firstName: this.firstNameController.text,
-        lastName: this.lastNameController.text,
-        cpf: this.cpfController.text,
-        email: this.emailController.text,
-        password: this.passwordController.text,
+        firstName: firstName,
+        lastName: lastName,
+        cpf: cpf,
+        email: email,
+        password: password,
       );
-      Account newAccount = await _createAccount(context, userForm, dependencies);
+      Account newAccount =
+          await _createAccount(context, userForm, dependencies);
       if (newAccount != null) {
         await dependencies.accountDAO.save(newAccount);
         await dependencies.userDAO.save(userForm.toUser(newAccount.id));
@@ -222,8 +242,11 @@ class NewAccountButton extends StatelessWidget {
     }
   }
 
-  Future<Account> _createAccount(BuildContext context,
-      UserForm userForm, AppDependencies dependencies) async {
+  Future<Account> _createAccount(BuildContext context, UserForm userForm,
+      AppDependencies dependencies) async {
+    setState(() {
+      _sendingForm = true;
+    });
     Account account =
         await dependencies.accountWebClient.save(userForm).catchError((e) {
       _showFailureDialog(context, message: e.toString());
@@ -231,13 +254,20 @@ class NewAccountButton extends StatelessWidget {
       _showFailureDialog(context, message: "Tempo de conexão esgotado");
     }, test: (e) => e is TimeoutException).catchError((e) {
       _showFailureDialog(context);
-    }, test: (e) => e is Exception);
+    }, test: (e) => e is Exception).whenComplete(() {
+      setState(() {
+        _sendingForm = false;
+      });
+    });
     return account;
   }
 
-  void _showFailureDialog(BuildContext context, {String message = "Erro desconhecido"}) {
-    showDialog(context: context, builder: (dialogContext) {
-      return FailureDialog(message: message);
-    });
+  void _showFailureDialog(BuildContext context,
+      {String message = "Erro desconhecido"}) {
+    showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return FailureDialog(message: message);
+        });
   }
 }

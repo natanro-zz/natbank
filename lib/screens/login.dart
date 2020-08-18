@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:natbank/dao/user_dao.dart';
-import 'package:natbank/models/response_dialog.dart';
+import 'package:natbank/widgets/response_dialog.dart';
 import 'package:natbank/screens/dashboard.dart';
 import 'package:natbank/screens/new_account_form.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
+
+/**
+ * TODO: autenticar no web service e usar o token como sessão do cliente
+ */
 
 class Login extends StatelessWidget {
   final TextEditingController _userCpfFieldController = TextEditingController();
@@ -58,6 +62,7 @@ class Login extends StatelessWidget {
                 hintText: "Digite sua senha",
                 controller: _userPasswordFieldController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                obscureText: true,
               ),
               LoginButton(
                 buttonIcon: Icons.arrow_forward,
@@ -191,7 +196,7 @@ class LoginButton extends StatelessWidget {
       }, test: (e) => e is Exception);
       if (validate == true) {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Dashboard())); // TODO: alterar o push pois o Dashboard mostra uma seta para voltar para a tela de login
+            .pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
       }
     }
   }
@@ -211,6 +216,7 @@ class LoginInputField extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final TextCapitalization textCapitalization;
+  final bool obscureText;
 
   LoginInputField({
     @required this.icon,
@@ -218,6 +224,7 @@ class LoginInputField extends StatelessWidget {
     this.controller,
     this.keyboardType,
     this.textCapitalization = TextCapitalization.none,
+    this.obscureText = false,
   });
 
   @override
@@ -253,6 +260,7 @@ class LoginInputField extends StatelessWidget {
               controller: this.controller,
               keyboardType: this.keyboardType,
               textCapitalization: this.textCapitalization,
+              obscureText: this.obscureText,
             ),
           )
         ],
