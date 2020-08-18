@@ -7,7 +7,7 @@ import 'package:natbank/widgets/response_dialog.dart';
 import 'package:natbank/models/transaction.dart';
 import 'package:natbank/widgets/transaction_auth_dialog.dart';
 import 'package:natbank/screens/contact_list.dart';
-import 'package:natbank/screens/dashboard.dart';
+import 'package:natbank/screens/dashboard/dashboard.dart';
 import 'package:natbank/screens/transaction_form.dart';
 
 import '../events/events.dart';

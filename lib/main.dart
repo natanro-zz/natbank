@@ -4,7 +4,7 @@ import 'package:natbank/dao/contact_dao.dart';
 import 'package:natbank/dao/user_dao.dart';
 import 'package:natbank/http/webclients/account_webclient.dart';
 import 'package:natbank/http/webclients/transactions_webclient.dart';
-import 'package:natbank/screens/dashboard.dart';
+import 'package:natbank/screens/dashboard/dashboard.dart';
 import 'package:natbank/screens/login.dart';
 import 'package:natbank/services/auth_token.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
@@ -47,11 +47,6 @@ class NatBankApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.blue[800],
-          accentColor: Colors.blue[900],
-          buttonTheme: ButtonThemeData(
-            buttonColor: Colors.blue[900],
-            textTheme: ButtonTextTheme.primary,
-          ),
         ),
         home: Dashboard(),
 //        home: FutureBuilder<Widget>(
@@ -76,6 +71,8 @@ class NatBankApp extends StatelessWidget {
       return Login();
   }
 }
+
+// TODO: user session
 
 class InitalWidget extends StatelessWidget {
   @override

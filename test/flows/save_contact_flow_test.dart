@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:natbank/main.dart';
 import 'package:natbank/screens/contact_form.dart';
 import 'package:natbank/screens/contact_list.dart';
-import 'package:natbank/screens/dashboard.dart';
+import 'package:natbank/screens/dashboard/dashboard.dart';
 
 import '../events/events.dart';
 import '../matchers/matchers.dart';

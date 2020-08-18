@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:natbank/dao/user_dao.dart';
 import 'package:natbank/widgets/response_dialog.dart';
-import 'package:natbank/screens/dashboard.dart';
+import 'package:natbank/screens/dashboard/dashboard.dart';
 import 'package:natbank/screens/new_account_form.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
 
