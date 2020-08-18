@@ -1,19 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:http_interceptor/http_interceptor.dart';
-import 'package:natbank/http/interceptors/logging_interceptor.dart';
+import 'package:natbank/http/webclients/natbank_server.dart';
 import 'package:natbank/models/transaction.dart';
 
 class TransactionsWebClient {
-  static const String _baseUrl = 'http://192.168.0.106:8080/transactions';
-  final Client _client =
-      HttpClientWithInterceptor.build(interceptors: [LoggingInterceptor()], requestTimeout: Duration(seconds: 7));
-  static final Map<int, String> _httpStatusCodeResponse = {
-    400 : "erro ao submeter a transação",
-    401 : "falha na autenticação",
-    409 : "transação já existe",
-  };
+  final _client = NatbankServer.client;
+  final _baseUrl = NatbankServer.baseUrl;
 
   Future<List<Transaction>> findAll() async {
     final Response response =
@@ -37,19 +30,6 @@ class TransactionsWebClient {
       return Transaction.fromJson(jsonDecode(response.body));
     }
 
-    throw HttpException(_getHttpException(response.statusCode));
+    throw NatbankException(message: jsonDecode(response.body), statusCode: response.statusCode);
   }
-
-  String _getHttpException(int statusCode) {
-    if(_httpStatusCodeResponse.containsKey(statusCode)){
-      return _httpStatusCodeResponse[statusCode];
-    }
-    return "Http unkown error";
-  }
-}
-
-class HttpException implements Exception {
-  final String message;
-
-  HttpException(this.message);
 }
