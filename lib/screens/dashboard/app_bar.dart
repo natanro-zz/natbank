@@ -17,7 +17,7 @@ class DashboardAppBar extends StatelessWidget {
           onTap: this.onTap,
           child: Container(
             color: Theme.of(context).primaryColor,
-            height: 120,
+            height: MediaQuery.of(context).size.height * .16,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -33,7 +33,7 @@ class DashboardAppBar extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 24,
                       ),
                     )
                   ],

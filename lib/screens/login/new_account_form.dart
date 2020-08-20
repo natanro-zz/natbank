@@ -9,6 +9,7 @@ import 'package:natbank/widgets/app_dependencies.dart';
 import 'package:natbank/widgets/progress.dart';
 
 import 'login.dart';
+import 'login_input_field.dart';
 
 class NewAccount extends StatefulWidget {
   @override

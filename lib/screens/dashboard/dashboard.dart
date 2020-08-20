@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:natbank/screens/contact_list.dart';
+import 'package:natbank/screens/dashboard/card_page.dart';
+import 'package:natbank/screens/dashboard/dash_menu.dart';
+import 'package:natbank/screens/dashboard/page_dots.dart';
 import 'package:natbank/screens/transactions_list.dart';
 
 import 'app_bar.dart';
+import 'feature_item_list.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -11,29 +15,54 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   bool _showMenu;
+  int _currentIndex;
 
   @override
   void initState() {
     super.initState();
     _showMenu = false;
+    _currentIndex = 0;
   }
 
   @override
   Widget build(BuildContext context) {
-//    final dependencies = AppDependencies.of(context).user;
+    final double _screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor /*Colors.blue[300]*/,
-      body: SingleChildScrollView(
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: <Widget>[
-            DashboardAppBar(showMenu: _showMenu, onTap: () {
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: <Widget>[
+          DashboardAppBar(
+            showMenu: _showMenu,
+            onTap: () {
               setState(() {
                 _showMenu = !_showMenu;
               });
-            },),
-          ],
-        ),
+            },
+          ),
+          Menu(
+            showMenu: _showMenu,
+            top: _screenHeight * 0.2,
+          ),
+          CardPage(
+            top: _showMenu ? _screenHeight * 0.8 : _screenHeight * 0.2,
+            onChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            showMenu: _showMenu,
+          ),
+          PageDots(
+            currentIndex: _currentIndex,
+            top: _screenHeight * 0.73,
+            showMenu: _showMenu,
+          ),
+          FeatureItemList(
+            height: _screenHeight * 0.15,
+            showMenu: _showMenu,
+          ),
+        ],
       ),
     );
   }
@@ -46,53 +75,5 @@ class _DashboardState extends State<Dashboard> {
   _showTransactionsList(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => TransactionsList()));
-  }
-}
-
-class FeatureItem extends StatelessWidget {
-  final String name;
-  final IconData icon;
-  final Function onClick;
-
-  FeatureItem(
-    this.name,
-    this.icon, {
-    @required this.onClick,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Material(
-        color: Colors.lightBlue[500],
-        child: InkWell(
-          // InkWell é o GestureDetector do MaterialDesign para animações
-          onTap: () => onClick(),
-          child: Container(
-            padding: EdgeInsets.all(8.0),
-            width: 130,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 32.0,
-                ),
-                Text(
-                  name,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

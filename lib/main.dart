@@ -5,7 +5,7 @@ import 'package:natbank/dao/user_dao.dart';
 import 'package:natbank/http/webclients/account_webclient.dart';
 import 'package:natbank/http/webclients/transactions_webclient.dart';
 import 'package:natbank/screens/dashboard/dashboard.dart';
-import 'package:natbank/screens/login.dart';
+import 'package:natbank/screens/login/login.dart';
 import 'package:natbank/services/auth_token.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
 
@@ -47,6 +47,7 @@ class NatBankApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.blue[800],
+          accentColor: Colors.white,
         ),
         home: Dashboard(),
 //        home: FutureBuilder<Widget>(
