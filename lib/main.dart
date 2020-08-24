@@ -4,10 +4,9 @@ import 'package:natbank/dao/contact_dao.dart';
 import 'package:natbank/dao/user_dao.dart';
 import 'package:natbank/http/webclients/account_webclient.dart';
 import 'package:natbank/http/webclients/transactions_webclient.dart';
-import 'package:natbank/screens/dashboard.dart';
-import 'package:natbank/screens/login.dart';
-import 'package:natbank/services/auth_token.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
+
+import 'screens/inital_screen.dart';
 
 void main() {
   runApp(NatBankApp(
@@ -47,60 +46,10 @@ class NatBankApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.blue[800],
-          accentColor: Colors.blue[900],
-          buttonTheme: ButtonThemeData(
-            buttonColor: Colors.blue[900],
-            textTheme: ButtonTextTheme.primary,
-          ),
+          accentColor: Colors.white,
         ),
-        home: Dashboard(),
-//        home: FutureBuilder<Widget>(
-//          future: homeWidget(),
-//          initialData: InitalWidget(),
-//          builder: (context, snapshot) {
-//            if(snapshot.connectionState == ConnectionState.done) {
-//              return snapshot.hasData ? snapshot.data : InitalWidget();
-//            } else {
-//              return InitalWidget();
-//            }
-//          },
-      ),
-    );
-  }
-
-  Future<Widget> homeWidget() async {
-    final authToken = AuthenticationToken();
-    if (await authToken.isUserAuthenticated())
-      return Dashboard();
-    else
-      return Login();
-  }
-}
-
-class InitalWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blueAccent,
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Image.asset(
-              'images/natbank_lightBlue500.png',
-            ),
-          ),
-        ),
+        home: InitialScreen(),
       ),
     );
   }
 }
-

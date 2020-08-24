@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:natbank/screens/dashboard.dart';
+import 'package:natbank/screens/dashboard/dashboard.dart';
 
 import '../matchers/matchers.dart';
 

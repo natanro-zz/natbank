@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:natbank/http/forms/user_form.dart';
 import 'package:natbank/http/webclients/natbank_server.dart';
 import 'package:natbank/models/account.dart';
-import 'package:natbank/forms/user_form.dart';
 
 class AccountWebClient {
   final _client = NatbankServer.client;

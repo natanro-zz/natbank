@@ -29,6 +29,7 @@ dependencies:
   http_interceptor:
   uuid:
   characters:
+  flutter_svg:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -53,11 +54,12 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/natbank_logo.png
-    - images/natbank.png
-    - images/natbank_red.png
-    - images/natbank_lightBlue.png
-    - images/natbank_lightBlue400.png
-    - images/natbank_lightBlue500.png
+    - images/logo_letters.png
+    - images/icons/bank-transfer-in.svg
+    - images/icons/bank-transfer-out.svg
+    - images/icons/account_balance_wallet-24px.svg
+    - images/icons/visibility-24px.svg
+    - images/icons/visibility_off-24px.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
