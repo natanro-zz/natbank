@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:natbank/screens/contact_list.dart';
 import 'package:natbank/screens/dashboard/card_page.dart';
 import 'package:natbank/screens/dashboard/dash_menu.dart';
@@ -22,6 +23,10 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     _showMenu = false;
     _currentIndex = 0;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.blue[900],
+    ));
   }
 
   @override
@@ -44,6 +49,11 @@ class _DashboardState extends State<Dashboard> {
             showMenu: _showMenu,
             top: _screenHeight * 0.2,
           ),
+          PageDots(
+            currentIndex: _currentIndex,
+            top: _screenHeight * 0.73,
+            showMenu: _showMenu,
+          ),
           CardPage(
             top: _showMenu ? _screenHeight * 0.8 : _screenHeight * 0.2,
             onChanged: (index) {
@@ -51,11 +61,6 @@ class _DashboardState extends State<Dashboard> {
                 _currentIndex = index;
               });
             },
-            showMenu: _showMenu,
-          ),
-          PageDots(
-            currentIndex: _currentIndex,
-            top: _screenHeight * 0.73,
             showMenu: _showMenu,
           ),
           FeatureItemList(

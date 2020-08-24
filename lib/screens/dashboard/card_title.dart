@@ -18,7 +18,7 @@ class CardTitle extends StatelessWidget {
         children: <Widget>[
           Icon(
             icon,
-            color: Colors.grey[700],
+            color: Colors.grey[600],
           ),
           SizedBox(
             width: 16,

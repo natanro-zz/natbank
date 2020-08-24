@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:natbank/http/forms/user_form.dart';
 import 'package:natbank/http/webclients/natbank_server.dart';
 import 'package:natbank/models/account.dart';
 import 'package:natbank/widgets/response_dialog.dart';
-import 'package:natbank/forms/user_form.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
 import 'package:natbank/widgets/progress.dart';
 
