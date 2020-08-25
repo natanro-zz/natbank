@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:natbank/dao/contact_dao.dart';
+import 'package:natbank/database/dao/contact_dao.dart';
 import 'package:natbank/models/contact.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
 

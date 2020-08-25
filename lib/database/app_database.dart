@@ -2,23 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-Future<Database> getDatabase({@required String tableName}) async {
-  final List<String> onCreateSQL = [
+Future<Database> getDatabase({@required String tableName, int version}) async {
+  final List<String> tables = [
     'CREATE TABLE user (id INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT, cpf TEXT, password TEXT, email TEXT)',
     'CREATE TABLE contacts (id INTEGER PRIMARY KEY, name TEXT, account_number INTEGER)',
     'CREATE TABLE account (id INTEGER PRIMARY KEY, number INTEGER, agency TEXT, balance REAL)',
-    'CREATE TABLE auth (id INTEGER PRIMARY KEY, duration INTEGER, loggedAt TEXT)'
+    'CREATE TABLE session (id INTEGER PRIMARY KEY, duration INTEGER, loggedAt TEXT)'
   ];
   final String path = join(await getDatabasesPath(), 'natbank.db');
-  final int version = 1;
+  final int _version = (version != null && version != 1) ? version : 1;
   return openDatabase(
     path,
     onCreate: (db, version) {
-      onCreateSQL.forEach((element) async => await db.execute(element));
+      tables.forEach((table) async => await db.execute(table));
     },
     onUpgrade: (db, oldVersion, newVersion) =>
         'DROP TABLE IF EXISTS $tableName',
-    version: version,
-    onDowngrade: onDatabaseDowngradeDelete,
+    version: _version,
   );
 }

@@ -4,10 +4,6 @@ import 'package:natbank/screens/login/new_account_form.dart';
 import 'login_button.dart';
 import 'login_input_field.dart';
 
-/**
- * TODO: autenticar no web service e usar o token como sessão do cliente
- */
-
 class Login extends StatelessWidget {
   final TextEditingController _userCpfFieldController = TextEditingController();
   final TextEditingController _userPasswordFieldController =

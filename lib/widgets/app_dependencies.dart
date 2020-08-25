@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:natbank/dao/account_dao.dart';
-import 'package:natbank/dao/contact_dao.dart';
-import 'package:natbank/dao/user_dao.dart';
+import 'package:natbank/database/dao/account_dao.dart';
+import 'package:natbank/database/dao/contact_dao.dart';
+import 'package:natbank/database/dao/user_dao.dart';
 import 'package:natbank/http/webclients/account_webclient.dart';
 import 'package:natbank/http/webclients/transactions_webclient.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:natbank/dao/account_dao.dart';
-import 'package:natbank/dao/contact_dao.dart';
-import 'package:natbank/dao/user_dao.dart';
 import 'package:natbank/http/webclients/account_webclient.dart';
 import 'package:natbank/http/webclients/transactions_webclient.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
 
+import 'database/dao/account_dao.dart';
+import 'database/dao/contact_dao.dart';
+import 'database/dao/user_dao.dart';
 import 'screens/inital_screen.dart';
 
 void main() {

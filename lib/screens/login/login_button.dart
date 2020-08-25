@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:natbank/dao/user_dao.dart';
+import 'package:natbank/database/dao/user_dao.dart';
+import 'package:natbank/http/webclients/natbank_server.dart';
 import 'package:natbank/screens/dashboard/dashboard.dart';
 import 'package:natbank/widgets/app_dependencies.dart';
 import 'package:natbank/widgets/response_dialog.dart';
@@ -76,13 +77,24 @@ class LoginButton extends StatelessWidget {
       String cpf = cpfController.text;
       String password = passwordController.text;
 
-      bool validate =
+      bool validateUserLocally =
           await dependencies.userDAO.validate(cpf, password).catchError((e) {
         _showLoginFailureDialog(context, e.message);
       }, test: (e) => e is UserDaoException).catchError((e) {
         _showLoginFailureDialog(context, "Erro no login");
+        debugPrint("Erro dao");
       }, test: (e) => e is Exception);
-      if (validate == true) {
+
+      bool validateUserRemotelly = await dependencies.accountWebClient
+          .validate(cpf, password)
+          .catchError((e) {
+        _showLoginFailureDialog(context, e.message);
+      }, test: (e) => e is NatbankException).catchError((e) {
+        _showLoginFailureDialog(context, 'Erro no login');
+        debugPrint("Erro webClient");
+      }, test: (e) => e is Exception);
+
+      if (validateUserLocally == true || validateUserRemotelly == true) {
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => Dashboard()));
       }

@@ -3,7 +3,7 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:natbank/http/interceptors/logging_interceptor.dart';
 
 class NatbankServer {
-  static final String _baseUrl = 'http://192.168.0.109:8080';
+  static final String _baseUrl = 'http://192.168.0.113:8080';
   static final Client _client = HttpClientWithInterceptor.build(
       interceptors: [LoggingInterceptor()],
       requestTimeout: Duration(seconds: 7));
@@ -28,8 +28,5 @@ class NatbankException implements Exception {
       this._message = message;
   }
 
-  @override
-  String toString() {
-    return this._message;
-  }
+  String get message => this._message;
 }

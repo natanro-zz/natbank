@@ -43,12 +43,13 @@ class UserDAO {
     userMap.forEach((element) {
       if (element.values.contains(cpf)) {
         if (element.values.contains(password)) {
-          validUser = true;
+          return true;
         }
+        throw UserDaoException("Senha inválida");
       }
     });
 
-    return (validUser == true) ? true : throw UserDaoException("CPF ou Senha inválidos");
+    return false;
   }
 }
 

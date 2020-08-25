@@ -1,11 +1,11 @@
-import 'package:natbank/dao/auth_token_dao.dart';
+import 'package:natbank/database/dao/session_dao.dart';
 
-class AuthenticationToken {
+class Session {
   static final int _id = 1;
-  static final Duration _duration = Duration(seconds: 1800);
+  static final Duration _duration = Duration(minutes: 10);
   DateTime _loggedAt;
 
-  AuthenticationToken({DateTime dateTime}) {
+  Session({DateTime dateTime}) {
     if (dateTime != null) {
       _loggedAt = dateTime;
     }
@@ -18,7 +18,7 @@ class AuthenticationToken {
   String get loggedAt => _loggedAt?.toIso8601String();
 
   Future<bool> isUserAuthenticated() async {
-    final dao = AuthenticationTokenDAO();
+    final dao = SessionDAO();
     Map<String, dynamic> authMap = await dao.find();
 
     bool isAuthenticated = false;

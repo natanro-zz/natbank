@@ -8,13 +8,13 @@ import 'package:natbank/models/account.dart';
 
 class AccountWebClient {
   final _client = NatbankServer.client;
-  final _baseUrl = NatbankServer.baseUrl + '/account/new';
+  final _baseUrl = NatbankServer.baseUrl + '/account';
 
   Future<Account> save(UserForm userForm) async {
     String body = jsonEncode(userForm.toJson());
 
     Response response = await _client.post(
-      _baseUrl,
+      _baseUrl + '/new',
       headers: {"Content-type": "application/json"},
       body: body,
     );
@@ -34,4 +34,28 @@ class AccountWebClient {
       message = response.body;
     throw NatbankException(message: message, statusCode: response.statusCode);
   }
+
+  Future<bool> validate(String cpf, String password) async {
+    String body = jsonEncode(_getUserCredentialMap(cpf, password));
+    debugPrint(body);
+
+    Response response = await _client.post(
+      _baseUrl,
+      headers: {'Content-type': 'application/json'},
+      body: body,
+    );
+
+    debugPrint("Status: " + response.statusCode.toString());
+    debugPrint("Headers: " + response.headers.toString());
+    debugPrint("Body: " + response.body);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw NatbankException(message: response.body);
+    }
+  }
+
+  Map<String, String> _getUserCredentialMap(String cpf, String password) =>
+      {"cpf": cpf, "password": password};
 }
